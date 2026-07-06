@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Offline Judge">
+  <rect width="512" height="512" rx="112" fill="#09090b"/>
+  <path d="M120 164c0-22.1 17.9-40 40-40h192c22.1 0 40 17.9 40 40v144c0 22.1-17.9 40-40 40H160c-22.1 0-40-17.9-40-40V164z" fill="#18181b" stroke="#34d399" stroke-width="18"/>
+  <path d="M216 201l-48 38 48 38" fill="none" stroke="#34d399" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M296 201l48 38-48 38" fill="none" stroke="#34d399" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M272 190l-34 100" fill="none" stroke="#a7f3d0" stroke-width="22" stroke-linecap="round"/>
+  <path d="M184 388h144" stroke="#34d399" stroke-width="26" stroke-linecap="round"/>
+</svg>

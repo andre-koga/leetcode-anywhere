@@ -1,0 +1,11 @@
+{
+  "name": "offline-judge",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "preview": "pnpm --filter frontend preview",
+    "lint": "pnpm --filter frontend lint"
+  },
+  "packageManager": "pnpm@10.33.3"
+}
