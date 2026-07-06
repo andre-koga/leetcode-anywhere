@@ -1,32 +1,25 @@
-# React + TypeScript + Vite
+# Offline Judge frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Vite + React + TypeScript PWA for offline coding practice.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 and React Router
+- Tailwind CSS v4
+- Radix UI primitives
+- CodeMirror 6 editor
+- Dexie / IndexedDB for local-first drafts and submissions
+- Web Workers for local execution
+- Pyodide for Python 3 execution, copied into `public/pyodide`
+- Vite PWA / Workbox for offline precaching
 
-## React Compiler
+## Local commands
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+pnpm install
+pnpm --filter frontend dev
+pnpm --filter frontend build
+pnpm --filter frontend preview
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`predev` and `prebuild` run `scripts/copy-pyodide.mjs`, which copies the Pyodide runtime from `node_modules` into `public/pyodide` so Python execution never depends on a CDN.
