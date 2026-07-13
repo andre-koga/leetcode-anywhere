@@ -8,12 +8,12 @@ const difficultyClasses: Record<Difficulty, string> = {
 
 export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ring-1 ${difficultyClasses[difficulty]}`}>
+    <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium capitalize ring-1 ${difficultyClasses[difficulty]}`}>
       {difficulty}
     </span>
   );
 }
 
 export function TagBadge({ children }: { children: string }) {
-  return <span className="rounded-full bg-zinc-800 px-2 py-1 text-xs text-zinc-300">{children}</span>;
+  return <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-300">{children}</span>;
 }

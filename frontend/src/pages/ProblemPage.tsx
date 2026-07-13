@@ -99,52 +99,55 @@ export function ProblemPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-zinc-100">
-          <ArrowLeft size={16} />
-          Back to problems
+    <div className="flex flex-col gap-2 p-2 sm:p-3 lg:h-full">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-zinc-400 transition hover:text-zinc-100">
+          <ArrowLeft size={14} />
+          Problems
         </Link>
         <RuntimePill state={runtimeState} language={language} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)]">
-        <section className="rounded-3xl border border-zinc-800 bg-zinc-900/70">
-          <div className="border-b border-zinc-800 p-5">
-            <div className="mb-3 flex flex-wrap items-center gap-2">
+      <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <section className="flex min-h-[22rem] flex-col overflow-hidden rounded-md border border-zinc-800 bg-zinc-900/70 lg:min-h-0">
+          <div className="shrink-0 border-b border-zinc-800 px-3 py-2">
+            <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
               <DifficultyBadge difficulty={problem.difficulty} />
               {problem.tags.map((tag) => (
                 <TagBadge key={tag}>{tag}</TagBadge>
               ))}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">{problem.title}</h1>
+            <h1 className="text-lg font-semibold tracking-tight">{problem.title}</h1>
           </div>
           <article
-            className="prose prose-invert max-w-none p-5 prose-pre:border prose-pre:border-zinc-800 prose-pre:bg-zinc-950"
+            className="prose prose-invert prose-sm max-w-none flex-1 overflow-y-auto px-3 py-3 prose-pre:border prose-pre:border-zinc-800 prose-pre:bg-zinc-950"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </section>
 
-        <section className="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/70">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 p-4">
-            <div>
-              <h2 className="font-semibold">Solution</h2>
-              <p className="text-xs text-zinc-400">Drafts are saved separately for each language.</p>
+        <section className="flex min-h-[32rem] flex-col overflow-hidden rounded-md border border-zinc-800 bg-zinc-900/70 lg:min-h-0">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-zinc-800 px-3 py-2">
+            <div className="min-w-0">
+              <h2 className="text-sm font-semibold">Solution</h2>
+              <p className="text-[11px] text-zinc-400">Drafts are saved separately for each language.</p>
             </div>
             <LanguageSelect value={language} onValueChange={setLanguage} />
           </div>
 
-          <CodeMirror
-            value={code}
-            height="520px"
-            extensions={extensions}
-            theme={oneDark}
-            basicSetup={{ autocompletion: true, lineNumbers: true, foldGutter: true }}
-            onChange={setCode}
-          />
+          <div className="min-h-[16rem] flex-1 overflow-hidden lg:min-h-0">
+            <CodeMirror
+              value={code}
+              height="100%"
+              className="h-full [&_.cm-editor]:h-full [&_.cm-scroller]:overflow-auto"
+              extensions={extensions}
+              theme={oneDark}
+              basicSetup={{ autocompletion: true, lineNumbers: true, foldGutter: true }}
+              onChange={setCode}
+            />
+          </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-y border-zinc-800 bg-zinc-950/70 p-4">
-            <div className="text-sm text-zinc-400">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-y border-zinc-800 bg-zinc-950/70 px-3 py-2">
+            <div className="text-xs text-zinc-400">
               {summary ? (
                 <span>
                   Last run: <VerdictText summary={summary} />
@@ -153,27 +156,27 @@ export function ProblemPage() {
                 'Run visible tests, then submit to include hidden tests.'
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <button
                 onClick={() => void execute(false)}
                 disabled={running}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {running ? <Loader2 className="animate-spin" size={16} /> : <Play size={16} />}
+                {running ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} />}
                 Run
               </button>
               <button
                 onClick={() => void execute(true)}
                 disabled={running}
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <Send size={16} />
+                <Send size={14} />
                 Submit
               </button>
             </div>
           </div>
 
-          <div className="grid gap-4 p-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid shrink-0 gap-2 overflow-y-auto border-t border-zinc-800 p-2 lg:max-h-[38%] xl:grid-cols-[1.1fr_0.9fr]">
             <ResultsPanel summary={summary} tests={problem.tests} />
             <SubmissionsPanel submissions={submissions ?? []} language={language} />
           </div>
@@ -194,8 +197,8 @@ function waitForHost(host: RuntimeHost, setRuntimeState: (state: 'booting' | 're
 function RuntimePill({ state, language }: { state: 'booting' | 'ready' | 'error'; language: Language }) {
   const label = state === 'ready' ? 'Runtime ready' : state === 'error' ? 'Runtime error' : 'Preparing runtime';
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300">
-      {state === 'booting' ? <Loader2 className="animate-spin text-amber-300" size={14} /> : <Clock size={14} />}
+    <div className="inline-flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-[11px] text-zinc-300">
+      {state === 'booting' ? <Loader2 className="animate-spin text-amber-300" size={12} /> : <Clock size={12} />}
       {label}: {LANGUAGES[language].label}
     </div>
   );
@@ -213,26 +216,26 @@ function VerdictText({ summary }: { summary: RunSummary }) {
 function ResultsPanel({ summary, tests }: { summary?: RunSummary; tests: TestCase[] }) {
   if (!summary) {
     return (
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 text-sm text-zinc-400">
+      <section className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2.5 text-xs text-zinc-400">
         Results will appear here after a run.
       </section>
     );
   }
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-2">
       <div>
-        <h3 className="font-semibold">Results</h3>
-        <p className="text-xs text-zinc-400">
+        <h3 className="text-sm font-semibold">Results</h3>
+        <p className="text-[11px] text-zinc-400">
           {summary.passed}/{summary.total} passed in {Math.round(summary.totalTimeMs)}ms
         </p>
       </div>
       {summary.fatalError && (
-        <pre className="max-h-48 overflow-auto rounded-xl border border-rose-500/30 bg-rose-950/30 p-3 text-xs text-rose-100">
+        <pre className="max-h-32 overflow-auto rounded-md border border-rose-500/30 bg-rose-950/30 p-2 text-[11px] text-rose-100">
           {summary.fatalError}
         </pre>
       )}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {summary.results.map((result) => (
           <ResultRow key={`${result.testId}-${result.status}`} result={result} test={tests.find((t) => t.id === result.testId)} />
         ))}
@@ -244,23 +247,23 @@ function ResultsPanel({ summary, tests }: { summary?: RunSummary; tests: TestCas
 function ResultRow({ result, test }: { result: TestResult; test?: TestCase }) {
   const passed = result.status === 'pass';
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          {passed ? <CheckCircle2 className="text-emerald-300" size={16} /> : <XCircle className="text-rose-300" size={16} />}
+    <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 text-xs font-medium">
+          {passed ? <CheckCircle2 className="text-emerald-300" size={14} /> : <XCircle className="text-rose-300" size={14} />}
           {test?.hidden ? 'Hidden test' : `Test ${result.testId}`}
         </div>
-        <span className="text-xs text-zinc-500">{Math.round(result.timeMs)}ms</span>
+        <span className="text-[11px] text-zinc-500">{Math.round(result.timeMs)}ms</span>
       </div>
       {!test?.hidden && test && (
-        <div className="mt-2 grid gap-2 text-xs text-zinc-400">
+        <div className="mt-1.5 grid gap-1 text-[11px] text-zinc-400">
           <CodeLine label="Input" value={JSON.stringify(test.args)} />
           <CodeLine label="Expected" value={JSON.stringify(test.expected)} />
           {result.actual && <CodeLine label="Actual" value={result.actual} />}
         </div>
       )}
-      {result.error && <pre className="mt-2 overflow-auto rounded-lg bg-zinc-900 p-2 text-xs text-rose-200">{result.error}</pre>}
-      {result.stdout && <pre className="mt-2 overflow-auto rounded-lg bg-zinc-900 p-2 text-xs text-zinc-300">{result.stdout}</pre>}
+      {result.error && <pre className="mt-1.5 overflow-auto rounded bg-zinc-900 p-1.5 text-[11px] text-rose-200">{result.error}</pre>}
+      {result.stdout && <pre className="mt-1.5 overflow-auto rounded bg-zinc-900 p-1.5 text-[11px] text-zinc-300">{result.stdout}</pre>}
     </div>
   );
 }
@@ -268,7 +271,7 @@ function ResultRow({ result, test }: { result: TestResult; test?: TestCase }) {
 function CodeLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="mr-2 text-zinc-500">{label}:</span>
+      <span className="mr-1.5 text-zinc-500">{label}:</span>
       <code className="break-all text-zinc-200">{value}</code>
     </div>
   );
@@ -282,26 +285,26 @@ function SubmissionsPanel({
   language: Language;
 }) {
   return (
-    <section className="space-y-3">
+    <section className="space-y-2">
       <div>
-        <h3 className="font-semibold">Submissions</h3>
-        <p className="text-xs text-zinc-400">Latest {LANGUAGES[language].label} attempts saved locally.</p>
+        <h3 className="text-sm font-semibold">Submissions</h3>
+        <p className="text-[11px] text-zinc-400">Latest {LANGUAGES[language].label} attempts saved locally.</p>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {submissions.length === 0 && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 text-sm text-zinc-400">
+          <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2.5 text-xs text-zinc-400">
             Submit a solution to save an attempt.
           </div>
         )}
         {submissions.map((submission) => (
-          <div key={submission.id} className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3 text-sm">
+          <div key={submission.id} className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2 text-xs">
             <div className="flex items-center justify-between gap-2">
               <span className={submission.verdict === 'accepted' ? 'font-medium text-emerald-300' : 'font-medium text-rose-300'}>
                 {titleCase(submission.verdict)}
               </span>
-              <span className="text-xs text-zinc-500">{new Date(submission.createdAt).toLocaleString()}</span>
+              <span className="text-[11px] text-zinc-500">{new Date(submission.createdAt).toLocaleString()}</span>
             </div>
-            <div className="mt-1 text-xs text-zinc-400">
+            <div className="mt-0.5 text-[11px] text-zinc-400">
               {submission.passed}/{submission.total} tests, {submission.timeMs}ms
             </div>
           </div>
