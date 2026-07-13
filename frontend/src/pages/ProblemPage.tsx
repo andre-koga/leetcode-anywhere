@@ -120,7 +120,7 @@ export function ProblemPage() {
             <h1 className="text-lg font-semibold tracking-tight">{problem.title}</h1>
           </div>
           <article
-            className="prose prose-invert prose-sm max-w-none flex-1 overflow-y-auto px-3 py-3 prose-pre:border prose-pre:border-zinc-800 prose-pre:bg-zinc-950"
+            className="problem-statement flex-1 overflow-y-auto px-3 py-3"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </section>
