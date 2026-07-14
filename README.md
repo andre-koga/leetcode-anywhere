@@ -1,4 +1,4 @@
-# Offline Judge
+# AnyLeet
 
 Offline-first coding practice app built with React, Vite, Tailwind, Radix UI, Dexie, and Web Workers.
 
@@ -6,6 +6,21 @@ Offline-first coding practice app built with React, Vite, Tailwind, Radix UI, De
 
 - `frontend/` - the PWA frontend.
 - `supabase/` - placeholder for future Supabase migrations, edge functions, and generated types.
+
+## Problem catalog
+
+The seed problems were replaced with an open LeetCode catalog:
+
+- Statements + multi-language starters: [neenza/leetcode-problems](https://github.com/neenza/leetcode-problems)
+- Extra runnable tests: [newfacade/LeetCodeDataset](https://github.com/newfacade/LeetCodeDataset)
+
+Rebuild the offline JSON with:
+
+```bash
+pnpm --filter frontend build-problems
+```
+
+This writes `frontend/public/data/problems.json` (free problems with JS/TS/Python starters). Not every problem has local tests, and LeetCode-style helpers such as `ListNode` / `TreeNode` are not fully emulated yet.
 
 ## MVP scope
 

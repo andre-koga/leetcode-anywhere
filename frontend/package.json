@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "copy-pyodide": "node scripts/copy-pyodide.mjs",
+    "build-problems": "node scripts/build-leetcode-problems.mjs",
     "predev": "node scripts/copy-pyodide.mjs",
     "dev": "vite",
     "prebuild": "node scripts/copy-pyodide.mjs",

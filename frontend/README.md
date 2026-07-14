@@ -1,4 +1,4 @@
-# Offline Judge frontend
+# AnyLeet frontend
 
 Vite + React + TypeScript PWA for offline coding practice.
 
