@@ -11,19 +11,20 @@ import { DifficultyBadge, TagBadge } from '../components/Badge';
 import { LanguageSelect } from '../components/LanguageSelect';
 import { db, getLastLanguage, saveDraft, setLastLanguage } from '../db/db';
 import { LANGUAGES } from '../lib/languages';
-import type { Language, RunSummary, TestCase, TestResult } from '../lib/types';
+import type { Language, Problem, RunSummary, TestCase, TestResult } from '../lib/types';
 import { RuntimeHost } from '../runtime/RuntimeHost';
-import { getProblem } from '../problems';
+import { loadProblem } from '../problems';
 
 export function ProblemPage() {
   const { problemId } = useParams();
-  const problem = problemId ? getProblem(problemId) : undefined;
+  const [problem, setProblem] = useState<Problem | null | undefined>(undefined);
   const [language, setLanguage] = useState<Language>('javascript');
   const [code, setCode] = useState('');
   const [summary, setSummary] = useState<RunSummary | undefined>();
   const [running, setRunning] = useState(false);
   const [runtimeState, setRuntimeState] = useState<'booting' | 'ready' | 'error'>('booting');
   const hostRef = useRef<RuntimeHost | null>(null);
+  const hasTests = Boolean(problem && problem.tests.length > 0);
 
   const draft = useLiveQuery(
     () => (problem ? db.drafts.get([problem.id, language]) : undefined),
@@ -34,6 +35,21 @@ export function ProblemPage() {
       problem ? db.submissions.where('[problemId+language]').equals([problem.id, language]).reverse().limit(6).toArray() : [],
     [problem?.id, language],
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    setProblem(undefined);
+    if (!problemId) {
+      setProblem(null);
+      return;
+    }
+    loadProblem(problemId).then((next) => {
+      if (!cancelled) setProblem(next ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [problemId]);
 
   useEffect(() => {
     getLastLanguage().then((saved) => {
@@ -73,10 +89,19 @@ export function ProblemPage() {
     [language],
   );
 
+  if (problem === undefined) {
+    return (
+      <div className="flex h-full items-center gap-2 p-4 text-sm text-zinc-400">
+        <Loader2 className="animate-spin" size={16} />
+        Loading problem…
+      </div>
+    );
+  }
+
   if (!problem) return <Navigate to="/" replace />;
 
   async function execute(includeHidden: boolean) {
-    if (!problem || !hostRef.current || running) return;
+    if (!problem || !hostRef.current || running || problem.tests.length === 0) return;
     setRunning(true);
     setRuntimeState('booting');
     const result = await hostRef.current.run(problem, code, includeHidden);
@@ -112,8 +137,9 @@ export function ProblemPage() {
         <section className="flex min-h-[22rem] flex-col overflow-hidden rounded-md border border-zinc-800 bg-zinc-900/70 lg:min-h-0">
           <div className="shrink-0 border-b border-zinc-800 px-3 py-2">
             <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+              {problem.frontendId && <span className="text-[11px] text-zinc-500">{problem.frontendId}.</span>}
               <DifficultyBadge difficulty={problem.difficulty} />
-              {problem.tags.map((tag) => (
+              {problem.tags.slice(0, 8).map((tag) => (
                 <TagBadge key={tag}>{tag}</TagBadge>
               ))}
             </div>
@@ -148,7 +174,9 @@ export function ProblemPage() {
 
           <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-y border-zinc-800 bg-zinc-950/70 px-3 py-2">
             <div className="text-xs text-zinc-400">
-              {summary ? (
+              {!hasTests ? (
+                'No local tests for this problem yet — you can still draft a solution.'
+              ) : summary ? (
                 <span>
                   Last run: <VerdictText summary={summary} />
                 </span>
@@ -159,7 +187,7 @@ export function ProblemPage() {
             <div className="flex gap-1.5">
               <button
                 onClick={() => void execute(false)}
-                disabled={running}
+                disabled={running || !hasTests}
                 className="inline-flex items-center gap-1.5 rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {running ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} />}
@@ -167,7 +195,7 @@ export function ProblemPage() {
               </button>
               <button
                 onClick={() => void execute(true)}
-                disabled={running}
+                disabled={running || !hasTests}
                 className="inline-flex items-center gap-1.5 rounded-md bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send size={14} />

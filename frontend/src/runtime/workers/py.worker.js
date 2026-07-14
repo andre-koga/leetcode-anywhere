@@ -53,6 +53,7 @@ import json
 import sys
 import time
 import traceback
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 def _deep_equal(a, b):
     if isinstance(a, (tuple, list)) and isinstance(b, list):
@@ -64,12 +65,35 @@ def _deep_equal(a, b):
 def _json_safe(value):
     return json.loads(json.dumps(value))
 
+def _resolve_fn(namespace, camel_name, snake_name):
+    direct = namespace.get(snake_name) or namespace.get(camel_name)
+    if callable(direct):
+        return direct
+    Solution = namespace.get("Solution")
+    if Solution is None:
+        return None
+    try:
+        instance = Solution()
+    except Exception:
+        return None
+    method = getattr(instance, camel_name, None) or getattr(instance, snake_name, None)
+    return method if callable(method) else None
+
 try:
-    _namespace = {}
+    _namespace = {
+        "List": List,
+        "Dict": Dict,
+        "Set": Set,
+        "Tuple": Tuple,
+        "Optional": Optional,
+        "Any": Any,
+    }
     exec(USER_CODE, _namespace)
-    _fn = _namespace.get(PY_FUNCTION_NAME) or _namespace.get(FUNCTION_NAME)
+    _fn = _resolve_fn(_namespace, FUNCTION_NAME, PY_FUNCTION_NAME)
     if not callable(_fn):
-        raise NameError(f"Function '{PY_FUNCTION_NAME}' is not defined. Define it at the top level.")
+        raise NameError(
+            f"Function '{FUNCTION_NAME}' is not defined. Define it at the top level or on class Solution."
+        )
 except Exception:
     _RESULT = json.dumps({"fatal": traceback.format_exc(limit=3)})
 else:

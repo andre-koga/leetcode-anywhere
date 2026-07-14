@@ -16,6 +16,8 @@ export interface TestCase {
 
 export interface Problem {
   id: string;
+  /** LeetCode frontend id when available. */
+  frontendId?: string;
   title: string;
   difficulty: Difficulty;
   tags: string[];
@@ -25,6 +27,8 @@ export interface Problem {
   description: string;
   starterCode: Record<Language, string>;
   tests: TestCase[];
+  /** Upstream dataset attribution. */
+  source?: string;
 }
 
 export type TestStatus = 'pass' | 'fail' | 'error' | 'timeout';

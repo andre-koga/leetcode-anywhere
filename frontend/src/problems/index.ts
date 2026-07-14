@@ -1,26 +1,36 @@
 import type { Problem } from '../lib/types';
-import twoSum from './two-sum';
-import validParentheses from './valid-parentheses';
-import fizzBuzz from './fizz-buzz';
-import containsDuplicate from './contains-duplicate';
-import climbingStairs from './climbing-stairs';
-import maximumSubarray from './maximum-subarray';
-import mergeIntervals from './merge-intervals';
-import longestSubstring from './longest-substring';
-import reverseString from './reverse-string';
+import meta from '../data/problems-meta.json';
 
-export const PROBLEMS: Problem[] = [
-  twoSum,
-  reverseString,
-  fizzBuzz,
-  validParentheses,
-  containsDuplicate,
-  climbingStairs,
-  maximumSubarray,
-  longestSubstring,
-  mergeIntervals,
-];
+let cache: Problem[] | null = null;
+let pending: Promise<Problem[]> | null = null;
+
+export const PROBLEMS_META = meta;
+
+export async function loadProblems(): Promise<Problem[]> {
+  if (cache) return cache;
+  if (!pending) {
+    pending = fetch('/data/problems.json')
+      .then((response) => {
+        if (!response.ok) throw new Error(`Failed to load problems (${response.status})`);
+        return response.json() as Promise<Problem[]>;
+      })
+      .then((problems) => {
+        cache = problems;
+        return problems;
+      })
+      .catch((error) => {
+        pending = null;
+        throw error;
+      });
+  }
+  return pending;
+}
 
 export function getProblem(id: string): Problem | undefined {
-  return PROBLEMS.find((p) => p.id === id);
+  return cache?.find((problem) => problem.id === id);
+}
+
+export async function loadProblem(id: string): Promise<Problem | undefined> {
+  const problems = await loadProblems();
+  return problems.find((problem) => problem.id === id);
 }

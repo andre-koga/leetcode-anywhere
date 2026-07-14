@@ -28,15 +28,26 @@ function runAll(req) {
   try {
     const factory = new Function(
       'console',
-      `"use strict";\n${js}\n;return typeof ${functionName} !== 'undefined' ? ${functionName} : undefined;`,
+      `"use strict";\n${js}\n;return (typeof ${functionName} !== 'undefined' ? ${functionName} : undefined);`,
     );
     fn = factory(fakeConsole);
+    if (typeof fn !== 'function') {
+      const solutionFactory = new Function(
+        'console',
+        `"use strict";\n${js}\n;if (typeof Solution === 'undefined') return undefined; const s = new Solution(); return typeof s.${functionName} === 'function' ? s.${functionName}.bind(s) : undefined;`,
+      );
+      fn = solutionFactory(fakeConsole);
+    }
   } catch (err) {
     post({ type: 'fatal', runId, error: errMessage(err) });
     return;
   }
   if (typeof fn !== 'function') {
-    post({ type: 'fatal', runId, error: `Function \`${functionName}\` is not defined. Define it at the top level.` });
+    post({
+      type: 'fatal',
+      runId,
+      error: `Function \`${functionName}\` is not defined. Define it at the top level or on class Solution.`,
+    });
     return;
   }
 

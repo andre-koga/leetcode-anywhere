@@ -3,7 +3,6 @@ import { Layout } from './components/Layout';
 import { ProblemListPage } from './pages/ProblemListPage';
 import { ProblemPage } from './pages/ProblemPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { PROBLEMS } from './problems';
 
 export default function App() {
   return (
@@ -12,7 +11,7 @@ export default function App() {
         <Route index element={<ProblemListPage />} />
         <Route path="problems/:problemId" element={<ProblemPage />} />
         <Route path="settings" element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to={`/problems/${PROBLEMS[0].id}`} replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );
