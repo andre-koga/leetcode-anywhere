@@ -141,7 +141,7 @@ export function ProblemListPage() {
           <Link
             key={problem.id}
             to={`/problems/${problem.id}`}
-            className="list-row group panel grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 px-3 py-2.5 sm:grid-cols-[minmax(0,28rem)_5.5rem_auto_minmax(0,1fr)]"
+            className="list-row group panel grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 px-3 py-2.5 sm:grid-cols-[minmax(0,28rem)_5.5rem_minmax(0,1fr)_auto]"
           >
             <div className="flex min-w-0 items-center gap-1.5">
               {solved.has(problem.id) && <CheckCircle2 className="shrink-0 text-ok" size={16} />}
@@ -156,11 +156,11 @@ export function ProblemListPage() {
             <div className="justify-self-end sm:justify-self-start">
               <DifficultyBadge difficulty={problem.difficulty} />
             </div>
+            <span className="hidden sm:block" aria-hidden />
             <ArrowRight
-              className="hidden text-fog transition group-hover:translate-x-1 group-hover:text-signal sm:block"
+              className="justify-self-end text-fog transition group-hover:translate-x-1 group-hover:text-signal"
               size={16}
             />
-            <span className="hidden sm:block" aria-hidden />
           </Link>
         ))}
       </div>
