@@ -24,7 +24,7 @@ export function Layout() {
               <LaptopMinimal size={16} />
             </span>
             <div className="min-w-0 leading-tight">
-              <div className="text-sm font-semibold tracking-tight">Offline Judge</div>
+              <div className="text-sm font-semibold tracking-tight">AnyLeet</div>
               {!isProblemWorkspace && (
                 <div className="truncate text-[11px] text-zinc-400">Practice coding problems without a server</div>
               )}

@@ -1,4 +1,4 @@
-# Offline Judge
+# AnyLeet
 
 Offline-first coding practice app built with React, Vite, Tailwind, Radix UI, Dexie, and Web Workers.
 

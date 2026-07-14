@@ -17,8 +17,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Offline Judge',
-        short_name: 'OfflineJudge',
+        name: 'AnyLeet',
+        short_name: 'AnyLeet',
         description:
           'Offline-first coding practice: solve algorithm problems and run tests entirely in your browser.',
         theme_color: '#09090b',
