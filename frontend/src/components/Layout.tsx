@@ -1,6 +1,7 @@
-import { LaptopMinimal, Settings, UserRound, WifiOff } from 'lucide-react';
+import { Settings, UserRound, WifiOff } from 'lucide-react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../auth/AuthContext';
+import { BrandMark } from './BrandMark';
 
 export function Layout() {
   const auth = useAuth();
@@ -9,43 +10,41 @@ export function Layout() {
 
   return (
     <div
-      className={`bg-zinc-950 text-zinc-100 ${
+      className={`app-shell text-paper ${
         isProblemWorkspace ? 'lg:h-dvh lg:overflow-hidden' : 'min-h-screen'
       }`}
     >
-      <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950">
+      <header className="sticky top-0 z-30 border-b border-line bg-ink/85 backdrop-blur-md">
         <div
           className={`mx-auto flex items-center justify-between gap-3 px-3 ${
             isProblemWorkspace ? 'h-10 max-w-none' : 'h-12 max-w-7xl'
           }`}
         >
-          <Link to="/" className="flex min-w-0 items-center gap-2">
-            <span className="grid size-7 shrink-0 place-items-center rounded-md bg-emerald-400 text-zinc-950">
-              <LaptopMinimal size={16} />
-            </span>
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5">
+            <BrandMark className="size-7 shrink-0 transition duration-200 group-hover:scale-[1.04] group-hover:rotate-[-3deg]" />
             <div className="min-w-0 leading-tight">
-              <div className="text-sm font-semibold tracking-tight">AnyLeet</div>
+              <div className="brand-wordmark text-[15px] text-paper">AnyLeet</div>
               {!isProblemWorkspace && (
-                <div className="truncate text-[11px] text-zinc-400">Practice coding problems without a server</div>
+                <div className="truncate text-[11px] text-fog">Offline judge · local runtimes</div>
               )}
             </div>
           </Link>
           <nav className="flex shrink-0 items-center gap-1.5">
             {!isProblemWorkspace && (
-              <div className="hidden items-center gap-1.5 rounded-md border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[11px] text-emerald-200 md:flex">
-                <WifiOff size={12} />
-                Code execution is fully local
+              <div className="hidden items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 text-[11px] text-fog md:flex">
+                <WifiOff size={12} className="text-signal" />
+                Execution stays on this device
               </div>
             )}
             {auth.status === 'authenticated' && (
-              <div className="hidden max-w-40 items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-[11px] text-zinc-300 sm:flex">
-                <UserRound size={12} className="text-emerald-300" />
+              <div className="hidden max-w-40 items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 text-[11px] text-mist sm:flex">
+                <UserRound size={12} className="text-ok" />
                 <span className="truncate">{auth.user?.email}</span>
               </div>
             )}
             <Link
               to="/settings"
-              className="inline-flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800"
+              className="inline-flex items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 text-xs text-mist transition hover:border-line-strong hover:text-paper"
               title="Settings"
             >
               <Settings size={14} />
