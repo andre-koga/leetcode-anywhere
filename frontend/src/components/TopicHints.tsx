@@ -23,7 +23,7 @@ export function TopicHints({ tags }: { tags: string[] }) {
         <ChevronDown size={14} className={`transition ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="flex flex-wrap gap-1.5 px-3 pb-2.5">
+        <div className="flex flex-wrap gap-1.5 px-3 pb-2.5 pt-1.5">
           {tags.map((tag) => (
             <TagBadge key={tag}>{tag}</TagBadge>
           ))}
