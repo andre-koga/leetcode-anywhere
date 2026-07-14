@@ -10,14 +10,17 @@ import { Link, Navigate, useParams } from 'react-router';
 import { DifficultyBadge } from '../components/Badge';
 import { TopicHints } from '../components/TopicHints';
 import { LanguageSelect } from '../components/LanguageSelect';
-import { db, getLastLanguage, saveDraft, setLastLanguage } from '../db/db';
+import { useAuth } from '../auth/AuthContext';
+import { createClientId, db, getLastLanguage, saveDraft, setLastLanguage } from '../db/db';
 import { LANGUAGES } from '../lib/languages';
+import { pushDraftNow, pushSubmissionNow } from '../lib/sync';
 import type { Language, Problem, RunSummary, TestCase, TestResult } from '../lib/types';
 import { RuntimeHost } from '../runtime/RuntimeHost';
 import { loadProblem } from '../problems';
 
 export function ProblemPage() {
   const { problemId } = useParams();
+  const auth = useAuth();
   const [problem, setProblem] = useState<Problem | null | undefined>(undefined);
   const [language, setLanguage] = useState<Language>('javascript');
   const [code, setCode] = useState('');
@@ -67,10 +70,20 @@ export function ProblemPage() {
   useEffect(() => {
     if (!problem || !code) return;
     const timer = window.setTimeout(() => {
-      void saveDraft(problem.id, language, code);
+      void (async () => {
+        const updatedAt = Date.now();
+        await saveDraft(problem.id, language, code, updatedAt);
+        if (auth.user) {
+          try {
+            await pushDraftNow(auth.user.id, problem.id, language, code, updatedAt);
+          } catch {
+            // Offline or sync failure — full sync will retry later.
+          }
+        }
+      })();
     }, 350);
     return () => window.clearTimeout(timer);
-  }, [code, language, problem]);
+  }, [auth.user, code, language, problem]);
 
   useEffect(() => {
     const host = new RuntimeHost(language);
@@ -111,7 +124,8 @@ export function ProblemPage() {
     waitForHost(hostRef.current, setRuntimeState);
 
     if (includeHidden) {
-      await db.submissions.add({
+      const localId = await db.submissions.add({
+        clientId: createClientId(),
         problemId: problem.id,
         language,
         code,
@@ -121,6 +135,16 @@ export function ProblemPage() {
         timeMs: Math.round(result.totalTimeMs),
         createdAt: Date.now(),
       });
+      if (auth.user) {
+        const saved = await db.submissions.get(localId);
+        if (saved) {
+          try {
+            await pushSubmissionNow(auth.user.id, saved);
+          } catch {
+            // Offline or sync failure — full sync will retry later.
+          }
+        }
+      }
     }
   }
 
@@ -315,7 +339,7 @@ function SubmissionsPanel({
     <section className="space-y-2">
       <div>
         <h3 className="text-sm font-semibold text-paper">Submissions</h3>
-        <p className="text-[11px] text-fog">Latest {LANGUAGES[language].label} attempts saved locally.</p>
+        <p className="text-[11px] text-fog">Latest {LANGUAGES[language].label} attempts · synced when signed in.</p>
       </div>
       <div className="space-y-1.5">
         {submissions.length === 0 && (

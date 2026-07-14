@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router';
 import { registerSW } from 'virtual:pwa-register';
 import App from './App';
 import { AuthProvider } from './auth/AuthProvider';
+import { ProfileProvider } from './auth/ProfileProvider';
 import { requestPersistentStorage } from './db/db';
 import './index.css';
 
@@ -13,9 +14,11 @@ requestPersistentStorage();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ProfileProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ProfileProvider>
     </AuthProvider>
   </StrictMode>,
 );

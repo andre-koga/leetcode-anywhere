@@ -1,12 +1,17 @@
 import { Settings, UserRound, WifiOff } from 'lucide-react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../auth/AuthContext';
+import { useProfile } from '../auth/ProfileContext';
+import { displayName, initials } from '../lib/profiles';
 import { BrandMark } from './BrandMark';
 
 export function Layout() {
   const auth = useAuth();
+  const profileApi = useProfile();
   const location = useLocation();
   const isProblemWorkspace = /^\/problems\/[^/]+$/.test(location.pathname);
+  const profile = profileApi.profile;
+  const label = displayName(profile, auth.user?.email);
 
   return (
     <div
@@ -37,10 +42,20 @@ export function Layout() {
               </div>
             )}
             {auth.status === 'authenticated' && (
-              <div className="hidden max-w-40 items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 text-[11px] text-mist sm:flex">
-                <UserRound size={12} className="text-ok" />
-                <span className="truncate">{auth.user?.email}</span>
-              </div>
+              <Link
+                to={profile?.username ? `/u/${profile.username}` : '/settings'}
+                className="hidden max-w-44 items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 text-[11px] text-mist transition hover:border-line-strong hover:text-paper sm:flex"
+                title="Your profile"
+              >
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" className="size-4 object-cover" />
+                ) : (
+                  <span className="grid size-4 place-items-center bg-ink-soft text-[9px] font-semibold text-ok">
+                    {initials(profile, auth.user?.email) || <UserRound size={10} />}
+                  </span>
+                )}
+                <span className="truncate">{profile?.username ? `@${profile.username}` : label}</span>
+              </Link>
             )}
             <Link
               to="/settings"

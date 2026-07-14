@@ -7,10 +7,14 @@ export interface Draft {
   language: Language;
   code: string;
   updatedAt: number;
+  /** Set after a successful cloud upsert for the signed-in user. */
+  syncedAt?: number;
 }
 
 export interface Submission {
   id?: number;
+  /** Stable id used for idempotent cloud sync. */
+  clientId: string;
   problemId: string;
   language: Language;
   code: string;
@@ -19,6 +23,8 @@ export interface Submission {
   total: number;
   timeMs: number;
   createdAt: number;
+  /** Set after a successful cloud insert for the signed-in user. */
+  syncedAt?: number;
 }
 
 export interface Setting {
@@ -33,20 +39,43 @@ class AppDB extends Dexie {
 
   constructor() {
     super('offline-judge');
-    // Schema mirrors the future Supabase tables (drafts, submissions) so sync
-    // can be layered on without a local migration.
+    // Schema mirrors Supabase tables (drafts, submissions) so sync can layer on
+    // without rewriting local keys.
     this.version(1).stores({
       drafts: '[problemId+language], problemId, updatedAt',
       submissions: '++id, problemId, [problemId+language], verdict, createdAt',
       settings: 'key',
     });
+    this.version(2)
+      .stores({
+        drafts: '[problemId+language], problemId, updatedAt, syncedAt',
+        submissions: '++id, clientId, problemId, [problemId+language], verdict, createdAt, syncedAt',
+        settings: 'key',
+      })
+      .upgrade(async (tx) => {
+        const rows = await tx.table('submissions').toArray();
+        for (const row of rows) {
+          if (!row.clientId) {
+            await tx.table('submissions').update(row.id, { clientId: crypto.randomUUID() });
+          }
+        }
+      });
   }
 }
 
 export const db = new AppDB();
 
-export async function saveDraft(problemId: string, language: Language, code: string): Promise<void> {
-  await db.drafts.put({ problemId, language, code, updatedAt: Date.now() });
+export function createClientId(): string {
+  return crypto.randomUUID();
+}
+
+export async function saveDraft(
+  problemId: string,
+  language: Language,
+  code: string,
+  updatedAt = Date.now(),
+): Promise<void> {
+  await db.drafts.put({ problemId, language, code, updatedAt });
 }
 
 export async function getDraft(problemId: string, language: Language): Promise<Draft | undefined> {
