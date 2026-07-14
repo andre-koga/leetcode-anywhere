@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowRight, CheckCircle2, Loader2, Search, X } from 'lucide-react';
 import { Link } from 'react-router';
-import { DifficultyBadge } from '../components/Badge';
+import { DifficultyMark } from '../components/Badge';
 import { db } from '../db/db';
 import type { Difficulty, Problem } from '../lib/types';
 import { loadProblems, PROBLEMS_META } from '../problems';
@@ -97,32 +97,33 @@ export function ProblemListPage() {
               : 'Loading catalog…'}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="relative">
-            <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-fog" />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search title, id, tag"
-              className="h-8 w-56 border border-line bg-ink py-1 pl-8 pr-2 text-xs text-paper outline-none placeholder:text-fog/60 focus:border-signal/50"
-            />
-          </label>
-          <div className="flex gap-1">
-            {FILTERS.map((item) => (
-              <button
-                key={item}
-                onClick={() => setFilter(item)}
-                className={`px-2.5 py-1 text-xs capitalize transition ${
-                  filter === item
-                    ? 'bg-signal font-semibold text-[#140d0a]'
-                    : 'border border-line bg-ink-elevated text-fog hover:text-paper'
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="relative">
+              <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-fog" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search title, id, tag"
+                className="h-8 w-56 border border-line bg-ink py-1 pl-8 pr-2 text-xs text-paper outline-none placeholder:text-fog/60 focus:border-signal/50"
+              />
+            </label>
+            <div className="flex gap-1">
+              {FILTERS.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setFilter(item)}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs capitalize transition ${
+                    filter === item
+                      ? 'bg-signal font-semibold text-[#140d0a]'
+                      : 'border border-line bg-ink-elevated text-fog hover:text-paper'
+                  }`}
+                >
+                  {item !== 'all' && <DifficultyMark difficulty={item} />}
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
       </div>
 
       {loadError && (
@@ -141,9 +142,10 @@ export function ProblemListPage() {
           <Link
             key={problem.id}
             to={`/problems/${problem.id}`}
-            className="list-row group panel grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 px-3 py-2.5 sm:grid-cols-[minmax(0,28rem)_5.5rem_minmax(0,1fr)_auto]"
+            className="list-row group panel flex items-center gap-2.5 px-3 py-2.5"
           >
-            <div className="flex min-w-0 items-center gap-1.5">
+            <DifficultyMark difficulty={problem.difficulty} />
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
               {solved.has(problem.id) && <CheckCircle2 className="shrink-0 text-ok" size={16} />}
               {problem.frontendId && (
                 <span className="shrink-0 font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>
@@ -153,12 +155,8 @@ export function ProblemListPage() {
                 <span className="shrink-0 rounded bg-ink-soft px-1.5 py-0.5 text-[11px] text-fog">no local tests</span>
               )}
             </div>
-            <div className="justify-self-end sm:justify-self-start">
-              <DifficultyBadge difficulty={problem.difficulty} />
-            </div>
-            <span className="hidden sm:block" aria-hidden />
             <ArrowRight
-              className="justify-self-end text-fog transition group-hover:translate-x-1 group-hover:text-signal"
+              className="shrink-0 text-fog transition group-hover:translate-x-1 group-hover:text-signal"
               size={16}
             />
           </Link>
