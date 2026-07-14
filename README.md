@@ -9,7 +9,7 @@ AnyLeet is a PWA that keeps the whole loop on your device:
 - **~2,750 free problems** loaded from open datasets (statements + JS/TS/Python starters)
 - **Local judging** for problems with imported tests (Web Workers; Python via self-hosted Pyodide)
 - **Per-problem, per-language drafts** and submission history in IndexedDB (Dexie)
-- **Optional Supabase auth** on Settings for future cloud sync (solving works without an account)
+- **Optional Supabase auth** with cloud sync for drafts/submissions, public profiles (username, name, bio, avatar), and solved lists
 
 ## Stack
 
@@ -17,8 +17,8 @@ AnyLeet is a PWA that keeps the whole loop on your device:
 | --- | --- |
 | App | React 19 + Vite + TypeScript |
 | UI | Tailwind CSS v4, Radix Select, CodeMirror |
-| Storage | Dexie / IndexedDB |
-| Auth | Supabase Auth (email/password), optional |
+| Storage | Dexie / IndexedDB + optional Supabase sync |
+| Auth / profiles | Supabase Auth, `profiles` table, avatar Storage |
 | Python | Pyodide (precached by the service worker) |
 
 ## Repo layout
@@ -27,7 +27,7 @@ AnyLeet is a PWA that keeps the whole loop on your device:
 frontend/          PWA app
   public/data/     Generated problem catalog (problems.json)
   scripts/         build-leetcode-problems.mjs, copy-pyodide.mjs
-supabase/          Auth setup notes; migrations reserved for later sync
+supabase/          Auth + migrations for profiles, drafts, submissions, avatars
 ```
 
 ## Problem catalog
@@ -52,12 +52,15 @@ pnpm install
 pnpm dev
 ```
 
-Optional Supabase (Settings sign-in):
+Optional Supabase (Settings sign-in, sync, profiles):
 
 1. Create a project at [supabase.com](https://supabase.com)
 2. Copy URL + **publishable** key into `frontend/.env.local` (see `frontend/.env.example`)
-3. Add redirect URL `http://localhost:5173/settings` under Auth → URL Configuration
-4. Restart `pnpm dev`
+3. Run the SQL in `supabase/migrations/` (Dashboard SQL Editor, or link the CLI and `supabase db push`)
+4. Add redirect URL `http://localhost:5173/settings` under Auth → URL Configuration
+5. Restart `pnpm dev`
+
+After sign-in, drafts and submissions sync to your account. Edit username / name / bio / avatar on Settings; public profiles live at `/u/:username`.
 
 Never put a service-role key in Vite env vars.
 
