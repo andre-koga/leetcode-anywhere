@@ -91,8 +91,8 @@ export function ProblemPage() {
 
   if (problem === undefined) {
     return (
-      <div className="flex h-full items-center gap-2 p-4 text-sm text-zinc-400">
-        <Loader2 className="animate-spin" size={16} />
+      <div className="flex h-full items-center gap-2 p-4 text-sm text-fog">
+        <Loader2 className="animate-spin text-signal" size={16} />
         Loading problem…
       </div>
     );
@@ -124,9 +124,9 @@ export function ProblemPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 p-2 sm:p-3 lg:h-full">
+    <div className="fade-in flex flex-col gap-2 p-2 sm:p-3 lg:h-full">
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-2">
-        <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-zinc-400 transition hover:text-zinc-100">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-fog transition hover:text-paper">
           <ArrowLeft size={14} />
           Problems
         </Link>
@@ -134,16 +134,16 @@ export function ProblemPage() {
       </div>
 
       <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <section className="flex min-h-[22rem] flex-col overflow-hidden rounded-md border border-zinc-800 bg-zinc-900/70 lg:min-h-0">
-          <div className="shrink-0 border-b border-zinc-800 px-3 py-2">
+        <section className="panel flex min-h-[22rem] flex-col overflow-hidden lg:min-h-0">
+          <div className="shrink-0 border-b border-line px-3 py-2">
             <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-              {problem.frontendId && <span className="text-[11px] text-zinc-500">{problem.frontendId}.</span>}
+              {problem.frontendId && <span className="font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>}
               <DifficultyBadge difficulty={problem.difficulty} />
               {problem.tags.slice(0, 8).map((tag) => (
                 <TagBadge key={tag}>{tag}</TagBadge>
               ))}
             </div>
-            <h1 className="text-lg font-semibold tracking-tight">{problem.title}</h1>
+            <h1 className="font-display text-lg font-bold tracking-tight text-paper">{problem.title}</h1>
           </div>
           <article
             className="problem-statement flex-1 overflow-y-auto px-3 py-3"
@@ -151,11 +151,11 @@ export function ProblemPage() {
           />
         </section>
 
-        <section className="flex min-h-[32rem] flex-col overflow-hidden rounded-md border border-zinc-800 bg-zinc-900/70 lg:min-h-0">
-          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-zinc-800 px-3 py-2">
+        <section className="panel flex min-h-[32rem] flex-col overflow-hidden lg:min-h-0">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line px-3 py-2">
             <div className="min-w-0">
-              <h2 className="text-sm font-semibold">Solution</h2>
-              <p className="text-[11px] text-zinc-400">Drafts are saved separately for each language.</p>
+              <h2 className="text-sm font-semibold text-paper">Solution</h2>
+              <p className="text-[11px] text-fog">Drafts are saved separately for each language.</p>
             </div>
             <LanguageSelect value={language} onValueChange={setLanguage} />
           </div>
@@ -172,8 +172,8 @@ export function ProblemPage() {
             />
           </div>
 
-          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-y border-zinc-800 bg-zinc-950/70 px-3 py-2">
-            <div className="text-xs text-zinc-400">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-y border-line bg-ink/80 px-3 py-2">
+            <div className="text-xs text-fog">
               {!hasTests ? (
                 'No local tests for this problem yet — you can still draft a solution.'
               ) : summary ? (
@@ -188,7 +188,7 @@ export function ProblemPage() {
               <button
                 onClick={() => void execute(false)}
                 disabled={running || !hasTests}
-                className="inline-flex items-center gap-1.5 rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="btn-ghost inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {running ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} />}
                 Run
@@ -196,7 +196,7 @@ export function ProblemPage() {
               <button
                 onClick={() => void execute(true)}
                 disabled={running || !hasTests}
-                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="btn-primary inline-flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send size={14} />
                 Submit
@@ -204,7 +204,7 @@ export function ProblemPage() {
             </div>
           </div>
 
-          <div className="grid shrink-0 gap-2 overflow-y-auto border-t border-zinc-800 p-2 lg:max-h-[38%] xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid shrink-0 gap-2 overflow-y-auto border-t border-line p-2 lg:max-h-[38%] xl:grid-cols-[1.1fr_0.9fr]">
             <ResultsPanel summary={summary} tests={problem.tests} />
             <SubmissionsPanel submissions={submissions ?? []} language={language} />
           </div>
@@ -225,8 +225,8 @@ function waitForHost(host: RuntimeHost, setRuntimeState: (state: 'booting' | 're
 function RuntimePill({ state, language }: { state: 'booting' | 'ready' | 'error'; language: Language }) {
   const label = state === 'ready' ? 'Runtime ready' : state === 'error' ? 'Runtime error' : 'Preparing runtime';
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-[11px] text-zinc-300">
-      {state === 'booting' ? <Loader2 className="animate-spin text-amber-300" size={12} /> : <Clock size={12} />}
+    <div className="inline-flex items-center gap-1.5 border border-line bg-ink-elevated px-2 py-1 font-mono text-[11px] text-fog">
+      {state === 'booting' ? <Loader2 className="animate-spin text-warn" size={12} /> : <Clock size={12} />}
       {label}: {LANGUAGES[language].label}
     </div>
   );
@@ -235,7 +235,7 @@ function RuntimePill({ state, language }: { state: 'booting' | 'ready' | 'error'
 function VerdictText({ summary }: { summary: RunSummary }) {
   const accepted = summary.verdict === 'accepted';
   return (
-    <span className={accepted ? 'font-medium text-emerald-300' : 'font-medium text-rose-300'}>
+    <span className={accepted ? 'font-medium text-ok' : 'font-medium text-bad'}>
       {accepted ? 'Accepted' : titleCase(summary.verdict)} ({summary.passed}/{summary.total})
     </span>
   );
@@ -244,22 +244,20 @@ function VerdictText({ summary }: { summary: RunSummary }) {
 function ResultsPanel({ summary, tests }: { summary?: RunSummary; tests: TestCase[] }) {
   if (!summary) {
     return (
-      <section className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2.5 text-xs text-zinc-400">
-        Results will appear here after a run.
-      </section>
+      <section className="panel-muted p-2.5 text-xs text-fog">Results will appear here after a run.</section>
     );
   }
 
   return (
     <section className="space-y-2">
       <div>
-        <h3 className="text-sm font-semibold">Results</h3>
-        <p className="text-[11px] text-zinc-400">
+        <h3 className="text-sm font-semibold text-paper">Results</h3>
+        <p className="text-[11px] text-fog">
           {summary.passed}/{summary.total} passed in {Math.round(summary.totalTimeMs)}ms
         </p>
       </div>
       {summary.fatalError && (
-        <pre className="max-h-32 overflow-auto rounded-md border border-rose-500/30 bg-rose-950/30 p-2 text-[11px] text-rose-100">
+        <pre className="max-h-32 overflow-auto border border-bad/40 bg-bad/10 p-2 font-mono text-[11px] text-bad">
           {summary.fatalError}
         </pre>
       )}
@@ -275,23 +273,23 @@ function ResultsPanel({ summary, tests }: { summary?: RunSummary; tests: TestCas
 function ResultRow({ result, test }: { result: TestResult; test?: TestCase }) {
   const passed = result.status === 'pass';
   return (
-    <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2">
+    <div className="panel-muted p-2">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 text-xs font-medium">
-          {passed ? <CheckCircle2 className="text-emerald-300" size={14} /> : <XCircle className="text-rose-300" size={14} />}
+          {passed ? <CheckCircle2 className="text-ok" size={14} /> : <XCircle className="text-bad" size={14} />}
           {test?.hidden ? 'Hidden test' : `Test ${result.testId}`}
         </div>
-        <span className="text-[11px] text-zinc-500">{Math.round(result.timeMs)}ms</span>
+        <span className="font-mono text-[11px] text-fog/80">{Math.round(result.timeMs)}ms</span>
       </div>
       {!test?.hidden && test && (
-        <div className="mt-1.5 grid gap-1 text-[11px] text-zinc-400">
+        <div className="mt-1.5 grid gap-1 font-mono text-[11px] text-fog">
           <CodeLine label="Input" value={JSON.stringify(test.args)} />
           <CodeLine label="Expected" value={JSON.stringify(test.expected)} />
           {result.actual && <CodeLine label="Actual" value={result.actual} />}
         </div>
       )}
-      {result.error && <pre className="mt-1.5 overflow-auto rounded bg-zinc-900 p-1.5 text-[11px] text-rose-200">{result.error}</pre>}
-      {result.stdout && <pre className="mt-1.5 overflow-auto rounded bg-zinc-900 p-1.5 text-[11px] text-zinc-300">{result.stdout}</pre>}
+      {result.error && <pre className="mt-1.5 overflow-auto bg-ink p-1.5 font-mono text-[11px] text-bad">{result.error}</pre>}
+      {result.stdout && <pre className="mt-1.5 overflow-auto bg-ink p-1.5 font-mono text-[11px] text-mist">{result.stdout}</pre>}
     </div>
   );
 }
@@ -299,8 +297,8 @@ function ResultRow({ result, test }: { result: TestResult; test?: TestCase }) {
 function CodeLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="mr-1.5 text-zinc-500">{label}:</span>
-      <code className="break-all text-zinc-200">{value}</code>
+      <span className="mr-1.5 text-fog/70">{label}:</span>
+      <code className="break-all text-mist">{value}</code>
     </div>
   );
 }
@@ -315,24 +313,22 @@ function SubmissionsPanel({
   return (
     <section className="space-y-2">
       <div>
-        <h3 className="text-sm font-semibold">Submissions</h3>
-        <p className="text-[11px] text-zinc-400">Latest {LANGUAGES[language].label} attempts saved locally.</p>
+        <h3 className="text-sm font-semibold text-paper">Submissions</h3>
+        <p className="text-[11px] text-fog">Latest {LANGUAGES[language].label} attempts saved locally.</p>
       </div>
       <div className="space-y-1.5">
         {submissions.length === 0 && (
-          <div className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2.5 text-xs text-zinc-400">
-            Submit a solution to save an attempt.
-          </div>
+          <div className="panel-muted p-2.5 text-xs text-fog">Submit a solution to save an attempt.</div>
         )}
         {submissions.map((submission) => (
-          <div key={submission.id} className="rounded-md border border-zinc-800 bg-zinc-950/60 p-2 text-xs">
+          <div key={submission.id} className="panel-muted p-2 text-xs">
             <div className="flex items-center justify-between gap-2">
-              <span className={submission.verdict === 'accepted' ? 'font-medium text-emerald-300' : 'font-medium text-rose-300'}>
+              <span className={submission.verdict === 'accepted' ? 'font-medium text-ok' : 'font-medium text-bad'}>
                 {titleCase(submission.verdict)}
               </span>
-              <span className="text-[11px] text-zinc-500">{new Date(submission.createdAt).toLocaleString()}</span>
+              <span className="font-mono text-[11px] text-fog/80">{new Date(submission.createdAt).toLocaleString()}</span>
             </div>
-            <div className="mt-0.5 text-[11px] text-zinc-400">
+            <div className="mt-0.5 text-[11px] text-fog">
               {submission.passed}/{submission.total} tests, {submission.timeMs}ms
             </div>
           </div>

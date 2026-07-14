@@ -1,9 +1,9 @@
 import type { Difficulty } from '../lib/types';
 
 const difficultyClasses: Record<Difficulty, string> = {
-  easy: 'bg-emerald-400/10 text-emerald-300 ring-emerald-400/20',
-  medium: 'bg-amber-400/10 text-amber-300 ring-amber-400/20',
-  hard: 'bg-rose-400/10 text-rose-300 ring-rose-400/20',
+  easy: 'bg-ok/10 text-ok ring-ok/25',
+  medium: 'bg-warn/10 text-warn ring-warn/25',
+  hard: 'bg-bad/10 text-bad ring-bad/25',
 };
 
 export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
@@ -15,5 +15,5 @@ export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
 }
 
 export function TagBadge({ children }: { children: string }) {
-  return <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-300">{children}</span>;
+  return <span className="rounded bg-ink-soft px-1.5 py-0.5 font-mono text-[10px] text-fog">{children}</span>;
 }

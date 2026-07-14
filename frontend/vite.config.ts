@@ -21,8 +21,8 @@ export default defineConfig({
         short_name: 'AnyLeet',
         description:
           'Offline-first coding practice: solve algorithm problems and run tests entirely in your browser.',
-        theme_color: '#09090b',
-        background_color: '#09090b',
+        theme_color: '#0b0c10',
+        background_color: '#0b0c10',
         display: 'standalone',
         start_url: '/',
         icons: [
