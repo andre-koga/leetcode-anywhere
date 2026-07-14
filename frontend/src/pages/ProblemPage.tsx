@@ -7,7 +7,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowLeft, CheckCircle2, Clock, Loader2, Play, Send, XCircle } from 'lucide-react';
 import { marked } from 'marked';
 import { Link, Navigate, useParams } from 'react-router';
-import { DifficultyBadge, TagBadge } from '../components/Badge';
+import { DifficultyBadge } from '../components/Badge';
+import { TopicHints } from '../components/TopicHints';
 import { LanguageSelect } from '../components/LanguageSelect';
 import { db, getLastLanguage, saveDraft, setLastLanguage } from '../db/db';
 import { LANGUAGES } from '../lib/languages';
@@ -135,15 +136,15 @@ export function ProblemPage() {
 
       <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <section className="panel flex min-h-[22rem] flex-col overflow-hidden lg:min-h-0">
-          <div className="shrink-0 border-b border-line px-3 py-2">
-            <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-              {problem.frontendId && <span className="font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>}
-              <DifficultyBadge difficulty={problem.difficulty} />
-              {problem.tags.slice(0, 8).map((tag) => (
-                <TagBadge key={tag}>{tag}</TagBadge>
-              ))}
+          <div className="shrink-0 border-b border-line">
+            <div className="px-3 py-2">
+              <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+                {problem.frontendId && <span className="font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>}
+                <DifficultyBadge difficulty={problem.difficulty} />
+              </div>
+              <h1 className="font-display text-lg font-bold tracking-tight text-paper">{problem.title}</h1>
             </div>
-            <h1 className="font-display text-lg font-bold tracking-tight text-paper">{problem.title}</h1>
+            <TopicHints tags={problem.tags} />
           </div>
           <article
             className="problem-statement flex-1 overflow-y-auto px-3 py-3"
