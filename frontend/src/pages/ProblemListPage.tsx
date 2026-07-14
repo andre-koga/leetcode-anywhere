@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowRight, CheckCircle2, Loader2, Search, X } from 'lucide-react';
 import { Link } from 'react-router';
-import { DifficultyBadge, TagBadge } from '../components/Badge';
+import { DifficultyBadge } from '../components/Badge';
 import { db } from '../db/db';
 import type { Difficulty, Problem } from '../lib/types';
 import { loadProblems, PROBLEMS_META } from '../problems';
@@ -144,7 +144,7 @@ export function ProblemListPage() {
             className="list-row group panel flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="min-w-0">
-              <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {solved.has(problem.id) && <CheckCircle2 className="text-ok" size={16} />}
                 {problem.frontendId && (
                   <span className="font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>
@@ -154,11 +154,6 @@ export function ProblemListPage() {
                 {problem.tests.length === 0 && (
                   <span className="rounded bg-ink-soft px-1.5 py-0.5 text-[11px] text-fog">no local tests</span>
                 )}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {problem.tags.slice(0, 6).map((tag) => (
-                  <TagBadge key={tag}>{tag}</TagBadge>
-                ))}
               </div>
             </div>
             <ArrowRight
