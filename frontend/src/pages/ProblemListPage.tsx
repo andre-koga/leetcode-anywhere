@@ -141,25 +141,25 @@ export function ProblemListPage() {
           <Link
             key={problem.id}
             to={`/problems/${problem.id}`}
-            className="list-row group panel flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between"
+            className="list-row group panel flex items-center gap-3 px-3 py-2.5"
           >
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-1.5">
-                {solved.has(problem.id) && <CheckCircle2 className="text-ok" size={16} />}
-                {problem.frontendId && (
-                  <span className="font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>
-                )}
-                <h3 className="text-sm font-semibold text-paper">{problem.title}</h3>
-                <DifficultyBadge difficulty={problem.difficulty} />
-                {problem.tests.length === 0 && (
-                  <span className="rounded bg-ink-soft px-1.5 py-0.5 text-[11px] text-fog">no local tests</span>
-                )}
-              </div>
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+              {solved.has(problem.id) && <CheckCircle2 className="shrink-0 text-ok" size={16} />}
+              {problem.frontendId && (
+                <span className="shrink-0 font-mono text-[11px] text-fog/80">{problem.frontendId}.</span>
+              )}
+              <h3 className="truncate text-sm font-semibold text-paper">{problem.title}</h3>
+              {problem.tests.length === 0 && (
+                <span className="rounded bg-ink-soft px-1.5 py-0.5 text-[11px] text-fog">no local tests</span>
+              )}
             </div>
-            <ArrowRight
-              className="shrink-0 text-fog transition group-hover:translate-x-1 group-hover:text-signal"
-              size={16}
-            />
+            <div className="flex shrink-0 items-center gap-2">
+              <DifficultyBadge difficulty={problem.difficulty} />
+              <ArrowRight
+                className="text-fog transition group-hover:translate-x-1 group-hover:text-signal"
+                size={16}
+              />
+            </div>
           </Link>
         ))}
       </div>
